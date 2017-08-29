@@ -1,118 +1,214 @@
-# Behaviorial Cloning Project
+# Behaviorial Cloning Project for Self Driving Car Class
 
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-Overview
----
-This repository contains starting files for the Behavioral Cloning Project.
+[//]: # (Image References)
 
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to clone driving behavior. You will train, validate and test a model using Keras. The model will output a steering angle to an autonomous vehicle.
+[image1]: ./writeup_images/flip_lrc_images.png "2 sets of input images"
+[image2]: ./writeup_images/brightness_aug.png "Brightness Augmentation"
+[image3]: ./writeup_images/steering_angle_hist.png "Histogram of steering angles"
 
-We have provided a simulator where you can steer a car around a track for data collection. You'll use image data and steering angles to train a neural network and then use this model to drive the car autonomously around the track.
+## Overview
 
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Behavioral-Cloning-P3/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
+My car is successfully able to navigate the 1st track easily and repeatably at the lower
+default speed of 9mph specified in the drive.py script.  At 15-20mph setting it will 
+navigate the track succesfully but has some instability in the 2 turns after the bridge.
+It succeeds in most cases, however if the initial conditions of the turn are out of its
+expected range it will drive off track.
 
-To meet specifications, the project will require submitting five files: 
-* model.py (script used to create and train the model)
-* drive.py (script to drive the car - feel free to modify this file)
-* model.h5 (a trained Keras model)
-* a report writeup file (either markdown or pdf)
-* video.mp4 (a video recording of your vehicle driving autonomously around the track for at least one full lap)
+## Installation & Resources
 
-This README file describes how to output the video in the "Details About Files In This Directory" section.
+1. Anaconda 
+2. Udacity [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+3. Udacity car [simulator](https://d17h27t6h515a5.cloudfront.net/topher/2017/February/58ae4594_mac-sim.app/mac-sim.app.zip)
+4. Udacity supplied [data](hyperlink)
 
-Creating a Great Writeup
----
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/432/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
 
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
+## Files and Usage
 
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
+### Files
+* `model.py` : The script used to create and train the model.
 
-The Project
----
-The goals / steps of this project are the following:
-* Use the simulator to collect data of good driving behavior 
-* Design, train and validate a model that predicts a steering angle from image data
-* Use the model to drive the vehicle autonomously around the first track in the simulator. The vehicle should remain on the road for an entire loop around the track.
-* Summarize the results with a written report
+* `drive.py` : original file, only modified one line for speed
 
-### Dependencies
-This lab requires:
+* `data.nvidia.model.h5` : The saved model weidghts. 
 
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+* `README.md` : This file.  Description of the project.
+* `run1.mp4` : a recording of a successful run
 
-The lab enviroment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
+### Usage of model.py
 
-The following resources can be found in this github repository:
-* drive.py
-* video.py
-* writeup_template.md
 
-The simulator can be downloaded from the classroom. In the classroom, we have also provided sample data that you can optionally use to help train your model.
+```
+usage: model.py [-h] [--epochs EPOCHS] [--prefix PREFIX] [--display]
+                [--model MODEL] [--generator] [--batch BATCH] [--augmentbase]
 
-## Details About Files In This Directory
+Process flags.
 
-### `drive.py`
-
-Usage of `drive.py` requires you have saved the trained model as an h5 file, i.e. `model.h5`. See the [Keras documentation](https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model) for how to create this file using the following command:
-```sh
-model.save(filepath)
+optional arguments:
+  -h, --help       show this help message and exit
+  --epochs EPOCHS  Number of epochs to run
+  --prefix PREFIX  prefix name data dir and model.
+  --display        Display pretty graphics
+  --model MODEL    Model to use. default: lenet
+  --generator      User a generator for data and validation. default: False
+  --batch BATCH    Batch size. default: 128
 ```
 
-Once the model has been saved, it can be used with drive.py using this command:
+Model.py will run with no options where it selects defaults values.  The primary option of interest is `--model` which will select a model network to use.  Current options are 'lenet', 'nvidia' and 'nvidia_1'.
 
-```sh
-python drive.py model.h5
+## Rubric Points
+
+### Files Submitted and Code Quality
+
+#### 1. Submitted files.  See files above for list.
+
+#### 2. Collecting data
+
+I collected 2 complete loops of the easy track and recovery data for several
+corners that I had trouble with in my original model.  The trouble corners 
+were the first corner with the dirt section entry and the following tight
+corner.  My data was collected with the keyboard and suffers from quite high
+steering angles.  This data was nearly unusable.
+
+I ended up using only the udacity data when I moved to the nvidia model and
+a varient on it.  I also stayed with the udacity data to be a more consistent
+comparison of models.  I did collect a limited ammount of recovery data.  The
+recovery data had to be edited to remove some of the start/stopping lines as
+the did not describe desired behavior.
+
+High quality data collection appears to be the key for this project as most
+model tests I made had no perceptable performance change.
+
+I did do data collection for the second track.  A single lap, it did show a good 
+variety and balanced set of steering angles.  I would need 2-3x the data at minimum
+for a success run based on the numbers in the supplied data set, even that assumes the
+complexity level of the tracks are similar which seems unlikely.
+
+Here is a histgram of steering angles for the data sets I have, note the differing 
+y-axis values:
+![alt text][image3]
+
+
+#### 3. Image processing and augmentation
+
+The initial image load is combined with basic augmentation.  It adds the left and right images with a .2 steering angle adjustment for those images.  For the center image it flips the image for a balanced set of turns.  See below for 2 sets of input images:
+
+![alt text][image1]
+
+My initial version did not account for cv2.imread using BGR representation causing some significant delay.
+
+The steering angle adjustment value of .2/-.2 for the left and right images was found with trial and error.  It seems to be about correct, but without a method to *score* a lap around the track it is somewhat subjective.
+
+If the `--augmentbase` option is selected, 25% of the images have a brightness adjustment made.  The adjustment is from .3 to 1.2 brightness.  Assuming the data is mostly "sunny" this biases towards darkening the image.  A set of 5 images with brightness(darness) augmentation below each:
+
+![alt text][image2]
+
+#### 4. Models
+
+I used 3 models and multiple varients of each one.  The three were:
+
+* lenet - it performed well and can drive around the track, steering is somewhat jerky.
+* nvidia - This is the basic nvidia model covered in class.  It is the best overall performer.
+* nvidia_1 - This is the nvidia model with L2 regularization on the fully connected layers.  It performs well, seems to smooth driving somewhat but has larger excursions.
+* nvidia_2 - This is the nvidia model with significantly reduced fully connected layers.  I had expected improved training times with the reduced parameters, but the times were unchanged.  The model was slower to converge to a similar loss value.  It is more unstable in certain turns.
+
+##### Model details and layers
+
+* lenet
+
+```
+____________________________________________________________________________________________________
+Layer (type)                     Output Shape          Param #     Connected to                     
+====================================================================================================
+cropping2d_1 (Cropping2D)        (None, 65, 320, 3)    0           cropping2d_input_1[0][0]         
+____________________________________________________________________________________________________
+lambda_1 (Lambda)                (None, 65, 320, 3)    0           cropping2d_1[0][0]               
+____________________________________________________________________________________________________
+convolution2d_1 (Convolution2D)  (None, 61, 316, 6)    456         lambda_1[0][0]                   
+____________________________________________________________________________________________________
+maxpooling2d_1 (MaxPooling2D)    (None, 30, 158, 6)    0           convolution2d_1[0][0]            
+____________________________________________________________________________________________________
+convolution2d_2 (Convolution2D)  (None, 26, 154, 6)    906         maxpooling2d_1[0][0]             
+____________________________________________________________________________________________________
+maxpooling2d_2 (MaxPooling2D)    (None, 13, 77, 6)     0           convolution2d_2[0][0]            
+____________________________________________________________________________________________________
+flatten_1 (Flatten)              (None, 6006)          0           maxpooling2d_2[0][0]             
+____________________________________________________________________________________________________
+dense_1 (Dense)                  (None, 120)           720840      flatten_1[0][0]                  
+____________________________________________________________________________________________________
+dropout_1 (Dropout)              (None, 120)           0           dense_1[0][0]                    
+____________________________________________________________________________________________________
+dense_2 (Dense)                  (None, 84)            10164       dropout_1[0][0]                  
+____________________________________________________________________________________________________
+dropout_2 (Dropout)              (None, 84)            0           dense_2[0][0]                    
+____________________________________________________________________________________________________
+dense_3 (Dense)                  (None, 20)            1700        dropout_2[0][0]                  
+____________________________________________________________________________________________________
+dense_4 (Dense)                  (None, 1)             21          dense_3[0][0]                    
+====================================================================================================
+Total params: 734,087
+Trainable params: 734,087
 ```
 
-The above command will load the trained model and use the model to make predictions on individual images in real-time and send the predicted angle back to the server via a websocket connection.
-
-Note: There is known local system's setting issue with replacing "," with "." when using drive.py. When this happens it can make predicted steering values clipped to max/min values. If this occurs, a known fix for this is to add "export LANG=en_US.utf8" to the bashrc file.
-
-#### Saving a video of the autonomous agent
-
-```sh
-python drive.py model.h5 run1
+* nvidia
+```
+____________________________________________________________________________________________________
+Layer (type)                     Output Shape          Param #     Connected to                     
+====================================================================================================
+cropping2d_1 (Cropping2D)        (None, 65, 320, 3)    0           cropping2d_input_1[0][0]         
+____________________________________________________________________________________________________
+lambda_1 (Lambda)                (None, 65, 320, 3)    0           cropping2d_1[0][0]               
+____________________________________________________________________________________________________
+convolution2d_1 (Convolution2D)  (None, 31, 158, 24)   1824        lambda_1[0][0]                   
+____________________________________________________________________________________________________
+convolution2d_2 (Convolution2D)  (None, 14, 77, 36)    21636       convolution2d_1[0][0]            
+____________________________________________________________________________________________________
+convolution2d_3 (Convolution2D)  (None, 5, 37, 48)     43248       convolution2d_2[0][0]            
+____________________________________________________________________________________________________
+convolution2d_4 (Convolution2D)  (None, 3, 35, 64)     27712       convolution2d_3[0][0]            
+____________________________________________________________________________________________________
+convolution2d_5 (Convolution2D)  (None, 1, 33, 64)     36928       convolution2d_4[0][0]            
+____________________________________________________________________________________________________
+flatten_1 (Flatten)              (None, 2112)          0           convolution2d_5[0][0]            
+____________________________________________________________________________________________________
+dense_1 (Dense)                  (None, 100)           211300      flatten_1[0][0]                  
+____________________________________________________________________________________________________
+dropout_1 (Dropout)              (None, 100)           0           dense_1[0][0]                    
+____________________________________________________________________________________________________
+dense_2 (Dense)                  (None, 50)            5050        dropout_1[0][0]                  
+____________________________________________________________________________________________________
+dropout_2 (Dropout)              (None, 50)            0           dense_2[0][0]                    
+____________________________________________________________________________________________________
+dense_3 (Dense)                  (None, 10)            510         dropout_2[0][0]                  
+____________________________________________________________________________________________________
+dense_4 (Dense)                  (None, 1)             11          dense_3[0][0]                    
+====================================================================================================
+Total params: 348,219
+Trainable params: 348,219
+Non-trainable params: 0
+____________________________________________________________________________________________________
 ```
 
-The fourth argument, `run1`, is the directory in which to save the images seen by the agent. If the directory already exists, it'll be overwritten.
+* nvidia_1 - I settled with the same model as above with a parameter of `W_regularizer = l2(0.001)` on all four Dense layers.
 
-```sh
-ls run1
-
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_424.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_451.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_477.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_528.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_573.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_618.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_697.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_723.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_749.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_817.jpg
-...
+```
+nvidia_1 has the same structure as the nvidia model above.
 ```
 
-The image file name is a timestamp of when the image was seen. This information is used by `video.py` to create a chronological video of the agent driving.
+#### 5. Learning rate
 
-### `video.py`
+The adam optimizer was chosen with the default parameters.  The last project of classifying german traffic
+signs strongly suggested a decaying/adaptive learning rate would be useful.
 
-```sh
-python video.py run1
-```
+## Conclusion
 
-Creates a video based on images found in the `run1` directory. The name of the video will be the name of the directory followed by `'.mp4'`, so, in this case the video will be `run1.mp4`.
+My car is able to reliably complete the circuit of the track at the default speed.  My key difficulty
+does appear to be collecting good data that will guide the training of the model in specific situations.
 
-Optionally, one can specify the FPS (frames per second) of the video:
+The model changes I made did not improve the performance perceptibly over the nvidia model described
+in the class lectures.  To be able to compare models, I feel it requires a metric to more reliably
+say the model A is better than model B.  Human observation of a single lap or few laps does not make 
+for a robust comparison.
 
-```sh
-python video.py run1 --fps 48
-```
 
-Will run the video at 48 FPS. The default FPS is 60.
-
-#### Why create a video
-
-1. It's been noted the simulator might perform differently based on the hardware. So if your model drives succesfully on your machine it might not on another machine (your reviewer). Saving a video is a solid backup in case this happens.
-2. You could slightly alter the code in `drive.py` and/or `video.py` to create a video of what your model sees after the image is processed (may be helpful for debugging).
