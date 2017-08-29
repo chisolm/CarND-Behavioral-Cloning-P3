@@ -1,0 +1,17 @@
+.DS_Store
+data
+firstdata
+2ndtrack
+recoverdata
+testdata
+.ipynb_checkpoints
+*.h5
+*.zip
+*.gz
+.*.swp
+*.p
+run1
+writeup_template.md.*
+notes
+mac_sim.app
+.ec2dir
